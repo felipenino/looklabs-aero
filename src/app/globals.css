@@ -1,26 +1,121 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* === BASE === */
+  --background: #F7F8FA;
+  --foreground: #0B1F3B;
+
+  /* === CARD === */
+  --card: #FFFFFF;
+  --card-foreground: #0B1F3B;
+
+  /* === POPOVER / DROPDOWN / TOOLTIP === */
+  --popover: #FFFFFF;
+  --popover-foreground: #0B1F3B;
+
+  /* === PRIMARY (Sky Blue — accent principal) === */
+  --primary: #3AA7FF;
+  --primary-foreground: #FFFFFF;
+
+  /* === SECONDARY === */
+  --secondary: #E8EDF2;
+  --secondary-foreground: #0B1F3B;
+
+  /* === MUTED === */
+  --muted: #EDEEF1;
+  --muted-foreground: #6B7280;
+
+  /* === ACCENT === */
+  --accent: #E8EDF2;
+  --accent-foreground: #0B1F3B;
+
+  /* === DESTRUCTIVE (Vermelho) === */
+  --destructive: #CF0A2C;
+  --destructive-foreground: #FFFFFF;
+
+  /* === BORDERS & INPUTS === */
+  --border: #E5E7EB;
+  --input: #D1D5DB;
+  --ring: #3AA7FF;
+
+  /* === BORDER RADIUS === */
+  --radius: 0.75rem;
+
+  /* === CHART COLORS === */
+  --chart-1: #3AA7FF;
+  --chart-2: #0B1F3B;
+  --chart-3: #CF0A2C;
+  --chart-4: #6B7280;
+  --chart-5: #10B981;
+
+  /* === CUSTOM SEMANTIC COLORS === */
+  --success: #10B981;
+  --success-foreground: #FFFFFF;
+  --warning: #F59E0B;
+  --warning-foreground: #111827;
+  --info: #3AA7FF;
+  --info-foreground: #FFFFFF;
+
+  /* === CUSTOM LOOKLAB TOKENS === */
+  --navy: #0B1F3B;
+  --charcoal: #111827;
+  --sky-blue: #3AA7FF;
+  --red-accent: #CF0A2C;
+  --off-white: #F7F8FA;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-navy: var(--navy);
+  --color-charcoal: var(--charcoal);
+  --color-sky-blue: var(--sky-blue);
+  --color-red-accent: var(--red-accent);
+  --color-off-white: var(--off-white);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
