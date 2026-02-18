@@ -17,7 +17,7 @@ export default function Home() {
   );
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex h-screen flex-col overflow-hidden">
       {/* Header */}
       <header className="flex h-16 items-center justify-end px-6">
         <span className="text-lg font-bold tracking-tight text-navy">
@@ -52,10 +52,6 @@ export default function Home() {
         />
       </div>
 
-      {/* Hint */}
-      <p className="pb-8 text-center text-sm text-charcoal/60">
-        Deslize para navegar • Toque para selecionar
-      </p>
     </main>
   );
 }
