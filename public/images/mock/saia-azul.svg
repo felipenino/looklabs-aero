@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- Blue skirt silhouette -->
+  <!-- Waistband -->
+  <rect x="130" y="80" width="140" height="22" rx="3" fill="#2563EB" stroke="#1D4ED8" stroke-width="2"/>
+  <!-- Skirt body (A-line) -->
+  <polygon points="125,102 95,310 305,310 275,102" fill="#3B82F6" stroke="#2563EB" stroke-width="2"/>
+  <!-- Fold lines -->
+  <line x1="155" y1="108" x2="130" y2="300" stroke="#2563EB" stroke-width="1" opacity="0.5"/>
+  <line x1="200" y1="108" x2="200" y2="305" stroke="#2563EB" stroke-width="1" opacity="0.5"/>
+  <line x1="245" y1="108" x2="270" y2="300" stroke="#2563EB" stroke-width="1" opacity="0.5"/>
+  <!-- Belt buckle detail -->
+  <rect x="192" y="84" width="16" height="14" rx="2" fill="none" stroke="#1D4ED8" stroke-width="1.5"/>
+
+</svg>

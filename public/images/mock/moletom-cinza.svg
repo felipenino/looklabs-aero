@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- Gray hoodie silhouette -->
+  <!-- Body (slightly oversized) -->
+  <polygon points="140,110 115,140 80,128 75,175 130,162 125,295 275,295 270,162 325,175 320,128 285,140 260,110" fill="#9CA3AF" stroke="#6B7280" stroke-width="2"/>
+  <!-- Hood -->
+  <path d="M145,110 Q140,70 170,55 Q200,42 230,55 Q260,70 255,110" fill="#9CA3AF" stroke="#6B7280" stroke-width="2"/>
+  <!-- Hood opening -->
+  <ellipse cx="200" cy="108" rx="35" ry="12" fill="#F7F8FA" stroke="#6B7280" stroke-width="2"/>
+  <!-- Drawstrings -->
+  <line x1="185" y1="120" x2="180" y2="165" stroke="#6B7280" stroke-width="1.5"/>
+  <line x1="215" y1="120" x2="220" y2="165" stroke="#6B7280" stroke-width="1.5"/>
+  <!-- Kangaroo pocket -->
+  <path d="M155,210 Q155,200 170,200 L230,200 Q245,200 245,210 L245,250 Q245,260 230,260 L170,260 Q155,260 155,250 Z" fill="none" stroke="#6B7280" stroke-width="1.5"/>
+  <!-- Center pocket line -->
+  <line x1="200" y1="200" x2="200" y2="260" stroke="#6B7280" stroke-width="1"/>
+  <!-- Ribbing at bottom -->
+  <rect x="125" y="282" width="150" height="13" rx="2" fill="#6B7280" opacity="0.3"/>
+
+</svg>

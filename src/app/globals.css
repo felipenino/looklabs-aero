@@ -124,3 +124,24 @@
     height: 100dvh;
   }
 }
+
+/* Hide scrollbar for touch scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Flat-lay piece entrance animation */
+@keyframes flatlay-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

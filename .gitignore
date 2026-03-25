@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Reference/test images
+pecas-testes-aeropostale/
+categorias masc/

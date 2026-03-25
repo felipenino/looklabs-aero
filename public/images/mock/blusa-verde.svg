@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- Green blouse silhouette -->
+  <!-- Body with slightly flared shape -->
+  <polygon points="145,100 120,130 90,120 85,165 140,152 135,285 265,285 260,152 315,165 310,120 280,130 255,100" fill="#34D399" stroke="#10B981" stroke-width="2"/>
+  <!-- Neckline (wider scoop) -->
+  <ellipse cx="200" cy="100" rx="40" ry="14" fill="#F7F8FA" stroke="#10B981" stroke-width="2"/>
+  <!-- Slight peplum / flare at bottom -->
+  <path d="M135,250 Q135,260 125,285 L130,285" fill="#34D399" stroke="#10B981" stroke-width="1"/>
+  <path d="M265,250 Q265,260 275,285 L270,285" fill="#34D399" stroke="#10B981" stroke-width="1"/>
+  <!-- Subtle drape lines -->
+  <path d="M180,120 Q175,200 180,280" fill="none" stroke="#10B981" stroke-width="0.8" opacity="0.4"/>
+  <path d="M220,120 Q225,200 220,280" fill="none" stroke="#10B981" stroke-width="0.8" opacity="0.4"/>
+
+</svg>

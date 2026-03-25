@@ -2,72 +2,94 @@
 
 import Image from "next/image";
 
+/* ─── Types ─── */
+
 interface LookPiece {
   slot: number;
   imageUrl: string;
+  name?: string | null;
+  categoryName?: string | null;
 }
 
-interface LookOverlayProps {
+interface LookCompositionProps {
   pieces: LookPiece[];
-  size?: "sm" | "lg";
 }
 
-// Template positions for 3, 4, and 5 piece layouts
-// Values are percentages: [top, left, width, height, zIndex]
-const TEMPLATES: Record<number, Record<number, [number, number, number, number, number]>> = {
+/* ─── Slot positions (% of container) ─── */
+
+const SLOT_POSITIONS = {
+  1: {
+    // Camiseta — canto superior esquerdo
+    top: "6%",
+    left: "5%",
+    width: "52%",
+    zIndex: 1,
+  },
+  2: {
+    // Jaqueta/Moletom — superior direito, sobrepõe slot 1
+    top: "0%",
+    left: "30%",
+    width: "58%",
+    zIndex: 2,
+  },
   3: {
-    1: [0, 5, 55, 50, 3],      // Top (camiseta)
-    2: [35, 5, 55, 55, 2],     // Bottom (calça) — overlaps 15%
-    3: [50, 60, 35, 40, 1],    // Footwear (right)
+    // Acessório/Calçado — centro direita, menor
+    top: "48%",
+    left: "52%",
+    width: "32%",
+    zIndex: 3,
   },
   4: {
-    1: [0, 5, 50, 48, 3],      // Top (camiseta)
-    2: [33, 5, 50, 55, 2],     // Bottom (calça)
-    3: [0, 52, 42, 48, 4],     // Layer (blazer) — top right
-    4: [50, 60, 35, 40, 1],    // Footwear (right)
+    // Bermuda/Calça — inferior esquerda
+    top: "45%",
+    left: "10%",
+    width: "50%",
+    zIndex: 2,
   },
-  5: {
-    1: [0, 5, 48, 45, 3],      // Top (camiseta)
-    2: [0, 50, 42, 45, 4],     // Layer (blazer)
-    3: [32, 5, 48, 50, 2],     // Bottom (calça)
-    4: [32, 52, 38, 35, 1],    // Accessory (bolsa)
-    5: [65, 55, 35, 30, 1],    // Footwear
-  },
+} as const;
+
+/* ─── Animation delays (staggered entrance) ─── */
+
+const ANIMATION_DELAYS: Record<number, string> = {
+  1: "0ms",
+  2: "100ms",
+  3: "200ms",
+  4: "300ms",
 };
 
-export function LookOverlay({ pieces, size = "sm" }: LookOverlayProps) {
-  const count = pieces.length;
-  const template = TEMPLATES[count] || TEMPLATES[3];
-  const containerClass =
-    size === "lg"
-      ? "relative aspect-[3/4] w-full max-w-md"
-      : "relative aspect-[3/4] w-full";
+/* ─── Component ─── */
 
+export function LookOverlay({ pieces }: LookCompositionProps) {
   return (
-    <div className={`${containerClass} rounded-2xl bg-off-white`}>
+    <div
+      className="relative mx-auto w-full overflow-hidden"
+      style={{
+        aspectRatio: "3 / 4",
+        maxHeight: "calc(100vh - 160px)",
+      }}
+    >
       {pieces.map((piece) => {
-        const pos = template[piece.slot];
+        const pos = SLOT_POSITIONS[piece.slot as keyof typeof SLOT_POSITIONS];
         if (!pos) return null;
-        const [top, left, width, height, zIndex] = pos;
 
         return (
           <div
             key={piece.slot}
-            className="absolute"
+            className="absolute animate-[flatlay-enter_400ms_ease-out_both]"
             style={{
-              top: `${top}%`,
-              left: `${left}%`,
-              width: `${width}%`,
-              height: `${height}%`,
-              zIndex,
+              top: pos.top,
+              left: pos.left,
+              width: pos.width,
+              zIndex: pos.zIndex,
+              animationDelay: ANIMATION_DELAYS[piece.slot] ?? "0ms",
             }}
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={piece.imageUrl}
-              alt={`Peça slot ${piece.slot}`}
-              fill
-              className="object-contain drop-shadow-md"
-              sizes={size === "lg" ? "400px" : "200px"}
+              alt={piece.name ?? `Peça slot ${piece.slot}`}
+              className="h-auto w-full object-contain"
+              draggable={false}
             />
           </div>
         );
@@ -75,3 +97,6 @@ export function LookOverlay({ pieces, size = "sm" }: LookOverlayProps) {
     </div>
   );
 }
+
+/* Re-export for backwards compat if needed */
+export { LookOverlay as LookComposition };

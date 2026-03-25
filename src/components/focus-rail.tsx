@@ -8,11 +8,20 @@ import {
   type ReactNode,
 } from "react";
 
+export interface FocusRailHandle {
+  goTo: (index: number) => void;
+}
+
 interface FocusRailProps<T> {
   items: T[];
   renderItem: (item: T, index: number, isActive: boolean) => ReactNode;
   onSelect: (item: T, index: number) => void;
   initialIndex?: number;
+  className?: string;
+  onActiveIndexChange?: (index: number) => void;
+  actionRef?: React.MutableRefObject<FocusRailHandle | undefined>;
+  /** Horizontal spacing between items in px (default: 280) */
+  itemSpacing?: number;
 }
 
 export function FocusRail<T>({
@@ -20,6 +29,10 @@ export function FocusRail<T>({
   renderItem,
   onSelect,
   initialIndex = 0,
+  className,
+  onActiveIndexChange,
+  actionRef,
+  itemSpacing = 280,
 }: FocusRailProps<T>) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,9 +43,17 @@ export function FocusRail<T>({
     (index: number) => {
       const clamped = Math.max(0, Math.min(items.length - 1, index));
       setActiveIndex(clamped);
+      onActiveIndexChange?.(clamped);
     },
-    [items.length]
+    [items.length, onActiveIndexChange]
   );
+
+  // Expose goTo to parent via actionRef
+  useEffect(() => {
+    if (actionRef) {
+      actionRef.current = { goTo };
+    }
+  }, [actionRef, goTo]);
 
   // Swipe handling
   const handleTouchStart = useCallback(
@@ -101,14 +122,14 @@ export function FocusRail<T>({
     if (absDiff > 2) {
       return {
         opacity: 0,
-        transform: `translateX(${diff * 280}px) scale(0.7)`,
+        transform: `translateX(${diff * itemSpacing}px) scale(0.7)`,
         zIndex: 0,
         filter: "blur(8px)",
         pointerEvents: "none" as const,
       };
     }
 
-    const xOffset = diff * 280;
+    const xOffset = diff * itemSpacing;
     const scale = absDiff === 0 ? 1 : absDiff === 1 ? 0.85 : 0.7;
     const opacity = absDiff === 0 ? 1 : absDiff === 1 ? 0.6 : 0.35;
     const blur = absDiff === 0 ? 0 : absDiff === 1 ? 2 : 6;
@@ -128,7 +149,7 @@ export function FocusRail<T>({
   return (
     <div
       ref={containerRef}
-      className="relative flex h-[calc(100vh-220px)] w-full items-center justify-center overflow-hidden"
+      className={className || "relative flex h-[calc(100vh-220px)] w-full items-center justify-center overflow-hidden"}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -139,7 +160,7 @@ export function FocusRail<T>({
         return (
           <div
             key={index}
-            className="absolute transition-all duration-500 ease-out"
+            className="absolute top-0 h-full transition-all duration-500 ease-out"
             style={style}
             onClick={() => {
               if (isActive) {

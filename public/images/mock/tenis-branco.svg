@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- White sneaker silhouette -->
+  <!-- Sole -->
+  <path d="M70,260 Q60,260 60,250 L60,240 Q60,235 70,235 L310,235 Q340,235 345,240 L350,250 Q350,260 340,260 Z" fill="#E5E7EB" stroke="#D1D5DB" stroke-width="2"/>
+  <!-- Shoe body -->
+  <path d="M80,235 L80,180 Q80,150 120,140 L200,130 Q220,128 240,135 L280,150 Q310,162 310,185 L310,235 Z" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2"/>
+  <!-- Tongue -->
+  <path d="M150,140 L150,110 Q150,100 170,95 L190,92 Q200,90 210,95 L220,100 Q225,105 225,115 L225,140" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1.5"/>
+  <!-- Laces -->
+  <line x1="160" y1="135" x2="215" y2="135" stroke="#D1D5DB" stroke-width="1.5"/>
+  <line x1="155" y1="148" x2="220" y2="148" stroke="#D1D5DB" stroke-width="1.5"/>
+  <line x1="150" y1="161" x2="225" y2="161" stroke="#D1D5DB" stroke-width="1.5"/>
+  <!-- Toe cap -->
+  <path d="M80,220 Q70,200 80,185" fill="none" stroke="#E5E7EB" stroke-width="2"/>
+  <!-- Logo circle -->
+  <circle cx="270" cy="200" r="12" fill="none" stroke="#D1D5DB" stroke-width="1.5"/>
+
+</svg>

@@ -21,6 +21,15 @@ export interface Piece {
   sku: string | null;
   name: string | null;
   is_active: boolean;
+  // Extended fields
+  cor: string | null;
+  preco_pdv: number | null;
+  tamanho: string | null;
+  grade: string | null;
+  subcategoria: string | null;
+  codigo_aero: string | null;
+  quantidade: number | null;
+  status_looklab: string | null;
 }
 
 export interface Look {
@@ -85,4 +94,15 @@ export interface LookWithPieces extends Look {
 export interface PieceWithRelations extends Piece {
   persona: Persona;
   category: Category;
+}
+
+export interface LookDetailFull {
+  id: string;
+  name: string | null;
+  pieces: {
+    slot: number;
+    imageUrl: string;
+    name: string | null;
+    categoryName: string | null;
+  }[];
 }

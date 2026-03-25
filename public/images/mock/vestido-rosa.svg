@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- Pink dress silhouette -->
+  <!-- Bodice -->
+  <polygon points="160,80 155,75 170,60 200,55 230,60 245,75 240,80 240,170 160,170" fill="#F472B6" stroke="#EC4899" stroke-width="2"/>
+  <!-- Straps -->
+  <line x1="170" y1="60" x2="175" y2="80" stroke="#EC4899" stroke-width="2.5"/>
+  <line x1="230" y1="60" x2="225" y2="80" stroke="#EC4899" stroke-width="2.5"/>
+  <!-- Skirt -->
+  <polygon points="155,170 120,320 280,320 245,170" fill="#F9A8D4" stroke="#EC4899" stroke-width="2"/>
+  <!-- Waist -->
+  <line x1="155" y1="170" x2="245" y2="170" stroke="#EC4899" stroke-width="2.5"/>
+  <!-- Skirt folds -->
+  <line x1="175" y1="175" x2="155" y2="310" stroke="#F472B6" stroke-width="1" opacity="0.5"/>
+  <line x1="200" y1="175" x2="200" y2="315" stroke="#F472B6" stroke-width="1" opacity="0.5"/>
+  <line x1="225" y1="175" x2="245" y2="310" stroke="#F472B6" stroke-width="1" opacity="0.5"/>
+
+</svg>

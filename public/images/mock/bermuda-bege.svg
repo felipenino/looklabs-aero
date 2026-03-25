@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#F7F8FA"/>
+  <!-- Beige shorts silhouette -->
+  <!-- Waistband -->
+  <rect x="110" y="100" width="180" height="22" rx="3" fill="#C8AD7F" stroke="#A68B5B" stroke-width="2"/>
+  <!-- Left leg -->
+  <polygon points="110,122 115,122 130,260 195,260 200,122" fill="#D4BE8D" stroke="#A68B5B" stroke-width="2"/>
+  <!-- Right leg -->
+  <polygon points="200,122 205,260 270,260 285,122 290,122" fill="#D4BE8D" stroke="#A68B5B" stroke-width="2"/>
+  <!-- Fly line -->
+  <line x1="200" y1="122" x2="200" y2="180" stroke="#A68B5B" stroke-width="1.5"/>
+  <!-- Pocket outlines -->
+  <path d="M130,128 L150,128 L155,160 L130,155 Z" fill="none" stroke="#A68B5B" stroke-width="1.2"/>
+  <path d="M270,128 L250,128 L245,160 L270,155 Z" fill="none" stroke="#A68B5B" stroke-width="1.2"/>
+
+</svg>
