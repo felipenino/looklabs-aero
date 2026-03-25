@@ -19,18 +19,18 @@ interface LookCompositionProps {
 
 const SLOT_POSITIONS = {
   1: {
-    // Camiseta — canto superior esquerdo
+    // Camiseta — canto superior esquerdo, SEMPRE em primeiro plano
     top: "6%",
     left: "5%",
     width: "52%",
-    zIndex: 1,
+    zIndex: 4,
   },
   2: {
-    // Jaqueta/Moletom — superior direito, sobrepõe slot 1
+    // Jaqueta/Moletom — superior direito, ATRÁS de tudo
     top: "0%",
     left: "30%",
     width: "58%",
-    zIndex: 2,
+    zIndex: 1,
   },
   3: {
     // Acessório/Calçado — centro direita, menor

@@ -120,7 +120,7 @@ export const MOCK_PIECES: Piece[] = [
   piece("m-ber-11", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/02-cinza.png`, "Shorts Água Cinza", "87132801-2"),
   piece("m-ber-12", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/03-verde.png`, "Shorts Água Verde", "87132805"),
   piece("m-ber-13", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/04-turquesa.png`, "Shorts Água Turquesa", "87132801-3"),
-  piece("m-ber-14", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/05-cinza-est.png`, "Shorts Água Cinza Estampado", "87132801-4"),
+  piece("m-ber-14", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/04-verde.png`, "Shorts Água Verde", "87132801-4"),
   piece("m-ber-15", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/06-preto.png`, "Shorts Água Preto", "87132801-7"),
   piece("m-ber-16", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/07-preto-aero.png`, "Shorts Água Preto Aero", "87132802-1"),
   piece("m-ber-17", MASC_PERSONA, CAT_BERMUDA, `${IMG}/shorts/08-turquesa-aero.png`, "Shorts Água Turquesa Aero", "87132802-3"),
@@ -135,6 +135,17 @@ export const MOCK_PIECES: Piece[] = [
   piece("m-mol-03", MASC_PERSONA, CAT_MOLETOM, `${IMG}/moletom/03-cereja.png`, "Moletom Cereja", "8746048-CR"),
 
   // =============================================
+  // MASCULINO — JAQUETA (1 peça)
+  // =============================================
+  piece("m-jaq-01", MASC_PERSONA, CAT_JAQUETA, `${IMG}/jaqueta/01-windbreaker-verde.png`, "Jaqueta Windbreaker Verde", "87140001"),
+
+  // =============================================
+  // MASCULINO — CAMISA (2 peças)
+  // =============================================
+  piece("m-cam-f01", MASC_PERSONA, CAT_BLUSA, `${IMG}/camisa/01-floral-laranja.png`, "Camisa Floral Laranja", "87110630-3"),
+  piece("m-cam-f02", MASC_PERSONA, CAT_BLUSA, `${IMG}/camisa/02-branca-folhas.png`, "Camisa Branca Folhas", "87110630-4"),
+
+  // =============================================
   // MASCULINO — ACESSÓRIO (5 peças)
   // =============================================
   piece("m-ace-01", MASC_PERSONA, CAT_ACESSORIO, `${IMG}/acessorio/01-chinelo-preto.png`, "Chinelo Preto", "84139754-1"),
@@ -142,6 +153,7 @@ export const MOCK_PIECES: Piece[] = [
   piece("m-ace-03", MASC_PERSONA, CAT_ACESSORIO, `${IMG}/acessorio/03-slide-cinza.png`, "Slide Cinza", "84149750-1"),
   piece("m-ace-04", MASC_PERSONA, CAT_ACESSORIO, `${IMG}/acessorio/04-slide-preto.png`, "Slide Preto", "84149750-3"),
   piece("m-ace-05", MASC_PERSONA, CAT_ACESSORIO, `${IMG}/acessorio/05-slide-branco.png`, "Slide Branco", "84149750-4"),
+  piece("m-ace-06", MASC_PERSONA, CAT_ACESSORIO, `${IMG}/acessorio/06-slide-bege.png`, "Slide Bege", "84139754-2b"),
 
   // =============================================
   // FEMININO — placeholder (kept minimal for now)
@@ -165,65 +177,48 @@ interface MockLookData {
 }
 
 const MOCK_LOOKS_DATA: MockLookData[] = [
-  // Look 1: Camiseta Branca + Calça Chino + Chinelo Preto (3 peças, sem slot 2)
+  // Look 1: Camiseta Branca + Jaqueta Windbreaker Verde + Shorts Verde (87132801-4) + Slide Branco
   {
     id: "look-001",
-    name: "Casual Clean",
+    name: "Street Fresh",
     pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-cal-01", slot: 4 },  // calça → slot 4
-      { pieceId: "m-ace-01", slot: 3 },  // chinelo → slot 3
+      { pieceId: "m-cam-01", slot: 1 },  // camiseta branca → slot 1
+      { pieceId: "m-jaq-01", slot: 2 },  // jaqueta windbreaker → slot 2
+      { pieceId: "m-ber-14", slot: 4 },  // shorts água verde 87132801-4 → slot 4
+      { pieceId: "m-ace-06", slot: 3 },  // slide bege 84139754-2 → slot 3
     ],
   },
-  // Look 2: Camiseta Branca + Bermuda Preta + Slide Cinza (3 peças, sem slot 2)
+  // Look 2: Camiseta Branca + Moletom Cereja (7.png) + Bermuda Preta (87117801-1) + Slide Preto (84149750-3)
   {
     id: "look-002",
-    name: "Street Básico",
+    name: "Bold Casual",
     pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-ber-05", slot: 4 },  // bermuda → slot 4
-      { pieceId: "m-ace-03", slot: 3 },  // slide → slot 3
+      { pieceId: "m-cam-01", slot: 1 },  // camiseta branca → slot 1
+      { pieceId: "m-mol-03", slot: 2 },  // moletom cereja → slot 2
+      { pieceId: "m-ber-05", slot: 4 },  // bermuda preta 87117801-1 → slot 4
+      { pieceId: "m-ace-04", slot: 3 },  // slide preto 84149750-3 → slot 3
     ],
   },
-  // Look 3: Camiseta Branca + Bermuda Caramelo + Chinelo Azul (3 peças, sem slot 2)
+  // Look 3: Camiseta Branca + Moletom Azul Claro + Bermuda Bege (87137801-3) + Slide Preto (84149750-3)
   {
     id: "look-003",
-    name: "Verão Relax",
-    pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-ber-06", slot: 4 },  // bermuda → slot 4
-      { pieceId: "m-ace-02", slot: 3 },  // chinelo → slot 3
-    ],
-  },
-  // Look 4: Camiseta Branca + Shorts Água Turquesa + Slide Branco (3 peças, sem slot 2)
-  {
-    id: "look-004",
-    name: "Beach Day",
-    pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-ber-13", slot: 4 },  // shorts → slot 4
-      { pieceId: "m-ace-05", slot: 3 },  // slide → slot 3
-    ],
-  },
-  // Look 5: Camiseta Branca + Bermuda Alfaiataria + Chinelo Preto (3 peças, sem slot 2)
-  {
-    id: "look-005",
-    name: "Smart Casual",
-    pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-ber-01", slot: 4 },  // bermuda → slot 4
-      { pieceId: "m-ace-01", slot: 3 },  // chinelo → slot 3
-    ],
-  },
-  // Look 6: Camiseta Branca + Moletom Azul + Bermuda Moletom Cinza + Slide Preto (4 peças)
-  {
-    id: "look-006",
     name: "Cozy Urbano",
     pieces: [
-      { pieceId: "m-cam-01", slot: 1 },  // camiseta → slot 1
-      { pieceId: "m-mol-01", slot: 2 },  // moletom → slot 2
-      { pieceId: "m-ber-03", slot: 4 },  // bermuda → slot 4
-      { pieceId: "m-ace-04", slot: 3 },  // slide → slot 3
+      { pieceId: "m-cam-01", slot: 1 },  // camiseta branca → slot 1
+      { pieceId: "m-mol-02", slot: 2 },  // moletom azul claro → slot 2
+      { pieceId: "m-ber-07", slot: 4 },  // bermuda bege 87137801-3 → slot 4
+      { pieceId: "m-ace-04", slot: 3 },  // slide preto 84149750-3 → slot 3
+    ],
+  },
+  // Look 4: Camiseta Branca + Camisa Floral (4.png) + Bermuda Cargo Verde (87137802-1) + Chinelo Preto (84139754-1)
+  {
+    id: "look-004",
+    name: "Verão Tropical",
+    pieces: [
+      { pieceId: "m-cam-01", slot: 1 },  // camiseta branca → slot 1
+      { pieceId: "m-cam-f01", slot: 2 },  // camisa floral laranja → slot 2
+      { pieceId: "m-ber-08", slot: 4 },  // bermuda cargo verde 87137802-1 → slot 4
+      { pieceId: "m-ace-01", slot: 3 },  // chinelo preto 84139754-1 → slot 3
     ],
   },
 ];
