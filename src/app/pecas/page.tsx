@@ -155,6 +155,8 @@ function PecasContent() {
                 onSetPrecoRange={setPrecoRange}
                 onClear={clearFilters}
                 activeCount={activeCount}
+                categoryId={categoryId}
+                gender={gender}
               />
             )}
 
