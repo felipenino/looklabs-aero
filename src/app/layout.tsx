@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { RootLayout } from "@/components/layout/RootLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -8,8 +9,8 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Aéropostale — Monte seu Look",
-  description: "Descubra combinações de looks na loja Aéropostale",
+  title: "TransLog Brasil — TMS/ERP",
+  description: "Sistema de gestão TMS/ERP para transportadoras",
 };
 
 export const viewport: Viewport = {
@@ -19,7 +20,7 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${geistSans.variable} font-sans antialiased`}>
-        {children}
+        <RootLayout>{children}</RootLayout>
       </body>
     </html>
   );
