@@ -13,8 +13,14 @@ export default function MapaPage() {
   const [selectedTruck, setSelectedTruck] = useState<Caminhao | null>(null);
 
   return (
-    <div className="absolute inset-0 -m-4">
-      <SimpleTruckMap onSelectTruck={setSelectedTruck} />
+    <div className="p-8 space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Mapa da Frota</h1>
+        <p className="text-gray-600 mt-2">20 caminhões em operação</p>
+      </div>
+      <div style={{ width: "100%", height: "600px", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid #e5e7eb" }}>
+        <SimpleTruckMap onSelectTruck={setSelectedTruck} />
+      </div>
       <TruckDetailPanel truck={selectedTruck} onClose={() => setSelectedTruck(null)} />
     </div>
   );

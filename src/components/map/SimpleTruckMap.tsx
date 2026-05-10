@@ -115,13 +115,12 @@ export function SimpleTruckMap({
   }, []);
 
   return (
-    <div className="w-full h-full">
-      <MapContainer
-        center={[-23.5504, -46.6361]}
-        zoom={7}
-        style={{ height: "100%", width: "100%", minHeight: "600px" }}
-        className="z-0"
-      >
+    <MapContainer
+      center={[-23.5504, -46.6361]}
+      zoom={7}
+      style={{ height: "100%", width: "100%" }}
+      className="z-0 w-full h-full"
+    >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; OpenStreetMap contributors'
@@ -144,7 +143,6 @@ export function SimpleTruckMap({
           </Popup>
         </Marker>
       ))}
-      </MapContainer>
-    </div>
+    </MapContainer>
   );
 }
