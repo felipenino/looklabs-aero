@@ -11,6 +11,13 @@ export default function GalpoesPage() {
         <p className="text-slate-600 mt-2">Visão de ocupação e atividades</p>
       </div>
 
+      {/* Description */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Ocupação e produtividade dos 3 centros de distribuição</span> (Guarulhos, Embu das Artes, Campinas). Mostra: ocupação atual (%), docas em uso, cargas aguardando e produtividade do dia. Ajuda a evitar gargalos, otimizar uso de docas e antecipar necessidade de turnos extras.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {galpoes.map((galpao) => {
           const ocupacaoColor =

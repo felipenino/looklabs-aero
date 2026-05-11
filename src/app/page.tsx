@@ -41,6 +41,13 @@ export default function Dashboard() {
         </button>
       </div>
 
+      {/* Description */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Central de controle diária</span> mostrando KPIs críticos: caminhões em operação, entregas do dia, SLA por cliente, faturamento mensal e ocupação de galpões. Os gráficos oferecem insights sobre desempenho e distribuição geográfica, permitindo decisões operacionais imediatas. Painel de alertas destaca problemas críticos em tempo real.
+        </p>
+      </div>
+
       {/* KPIs Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <KPICard

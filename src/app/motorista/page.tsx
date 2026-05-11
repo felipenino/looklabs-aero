@@ -40,7 +40,21 @@ export default function MotoristaPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 space-y-6">
+      {/* Header and Description */}
+      <div className="space-y-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">App Motorista</h1>
+          <p className="text-gray-600 mt-2">Simulação do app mobile para entregadores</p>
+        </div>
+
+        <div className="bg-cyan-50 border border-cyan-200 rounded-lg p-4">
+          <p className="text-sm text-gray-700">
+            <span className="font-semibold">5 telas do app mobile</span> que motoristas usam diariamente: (1) <strong>Hoje</strong> — lista de 7 entregas pendentes; (2) <strong>Detalhe</strong> — endereço, contato, observações; (3) <strong>Confirmar</strong> — assinatura + foto; (4) <strong>Ocorrência</strong> — formulário rápido; (5) <strong>Checklist</strong> — saúde do veículo. Demonstra experiência mobile intuitiva para campo.
+          </p>
+        </div>
+      </div>
+
       {/* iPhone Frame */}
       <div
         className="mx-auto bg-black rounded-3xl border-8 border-slate-900 shadow-2xl overflow-hidden"
@@ -62,7 +76,7 @@ export default function MotoristaPage() {
             <button className="p-1">
               <Menu className="w-5 h-5" />
             </button>
-            <h1 className="text-lg font-bold">TransLog</h1>
+            <h1 className="text-lg font-bold">Translife</h1>
             <div className="w-5"></div>
           </div>
 

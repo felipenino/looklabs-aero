@@ -29,6 +29,13 @@ export default function FrotaPage() {
         <p className="text-slate-600 mt-2">{caminhoes.length} caminhões no total</p>
       </div>
 
+      {/* Description */}
+      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Status de saúde e manutenção</span> de todos os 20 caminhões. Clique em qualquer caminhão para abrir checklist visual com 12 itens codificados por semáforo (verde=ok, amarelo=atenção, vermelho=crítico). Identifica necessidades de manutenção preventiva e corretiva para evitar paradas inesperadas.
+        </p>
+      </div>
+
       {/* Table */}
       <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">

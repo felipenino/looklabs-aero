@@ -9,7 +9,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "TransLog Brasil — TMS/ERP",
+  title: "Translife Brasil — TMS/ERP",
   description: "Sistema de gestão TMS/ERP para transportadoras",
 };
 

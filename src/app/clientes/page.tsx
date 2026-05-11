@@ -11,6 +11,13 @@ export default function ClientesPage() {
         <p className="text-slate-600 mt-2">Visão por cliente</p>
       </div>
 
+      {/* Description */}
+      <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Performance e histórico de cada cliente</span>. Cards com segmento, volume/mês, KPIs (SLA %, entregas no prazo, faturamento, ocorrências) e gráfico de SLA últimos 30 dias. Permite monitorar saúde de relacionamento, identificar clientes em risco e comunicar valor agregado.
+        </p>
+      </div>
+
       {/* Cards por Cliente */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {clientes.map((cliente) => {

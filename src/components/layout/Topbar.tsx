@@ -7,7 +7,7 @@ export function Topbar() {
     <header className="sticky top-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-30 shadow-sm">
       {/* Logo e marca */}
       <div className="flex items-center gap-3">
-        <h2 className="text-lg font-semibold text-gray-900">TransLog Brasil</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Translife Brasil</h2>
       </div>
 
       {/* Search + Icons */}

@@ -45,6 +45,13 @@ export default function CargasPage() {
         </button>
       </div>
 
+      {/* Description */}
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Rastreamento de todas as 30 entregas</span> com filtros por cliente, status e data. Clique em qualquer carga para ver timeline visual detalhado (coletada → galpão → rota → entrega → entregue) e histórico de ocorrências. Oferece visibilidade total da operação ponta a ponta.
+        </p>
+      </div>
+
       {/* Table */}
       <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">

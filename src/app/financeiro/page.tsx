@@ -28,6 +28,13 @@ export default function FinanceiroPage() {
         </button>
       </div>
 
+      {/* Description */}
+      <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p className="text-sm text-gray-700">
+          <span className="font-semibold">Dashboard financeiro completo</span>: faturamento por cliente (ranking 6 meses), contas a receber (CTes em aberto, vencimento, atrasos), custo por viagem (top 7 rotas mais caras/lucrativas com km, custo médio, margem). Identifica clientes e rotas mais lucrativos, monitora saúde de caixa e otimiza precificação.
+        </p>
+      </div>
+
       {/* Faturamento por Cliente */}
       <div className="bg-white rounded-lg border border-slate-200 p-6">
         <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">

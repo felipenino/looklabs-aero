@@ -32,10 +32,8 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-6 py-6 border-b border-gray-200">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center">
-            <span className="text-white font-bold text-sm">TL</span>
-          </div>
-          <h1 className="text-lg font-bold text-gray-900">TransLog</h1>
+          <img src="/images/logo-translife.svg" alt="Translife" className="w-8 h-8" />
+          <h1 className="text-lg font-bold text-gray-900">Translife</h1>
         </div>
         <p className="text-xs text-gray-500">Gestão TMS/ERP</p>
       </div>
