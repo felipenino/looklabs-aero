@@ -7,8 +7,7 @@ import { LookOverlay } from "@/components/look-overlay";
 import { FeedbackWidget } from "@/components/feedback-widget";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase/client";
-import { getMockLooksForPiece } from "@/lib/mock-data";
+import { getRealLooksForPiece } from "@/lib/real-data";
 import type { LookDetailFull } from "@/types/database";
 
 function LooksCarouselContent() {
@@ -21,85 +20,18 @@ function LooksCarouselContent() {
   const railRef = useRef<FocusRailHandle | undefined>(undefined);
 
   useEffect(() => {
-    async function fetchLooksWithDetails() {
-      const { data: lookPieceData } = await supabase
-        .from("look_pieces")
-        .select("look_id")
-        .eq("piece_id", pieceId);
-
-      if (!lookPieceData || lookPieceData.length === 0) {
-        setLooks(getMockLooksForPiece(pieceId));
-        setLoading(false);
-        return;
-      }
-
-      const lookIds = [...new Set(lookPieceData.map((lp) => lp.look_id))];
-
-      const { data: looksData } = await supabase
-        .from("looks")
-        .select("id, name")
-        .in("id", lookIds)
-        .eq("is_active", true);
-
-      if (!looksData || looksData.length === 0) {
-        setLooks(getMockLooksForPiece(pieceId));
-        setLoading(false);
-        return;
-      }
-
-      const { data: allPieces } = await supabase
-        .from("look_pieces")
-        .select(
-          "look_id, slot, piece:pieces(image_url, name, is_active, category:categories(name))"
-        )
-        .in("look_id", lookIds);
-
-      const result: LookDetailFull[] = looksData.map((look) => {
-        const lookPieces = (allPieces || [])
-          .filter((lp) => lp.look_id === look.id && lp.piece)
-          .filter((lp) => {
-            const piece = lp.piece as unknown as { is_active: boolean };
-            return piece.is_active;
-          })
-          .map((lp) => {
-            const piece = lp.piece as unknown as {
-              image_url: string;
-              name: string | null;
-              category: { name: string } | null;
-            };
-            return {
-              slot: lp.slot,
-              imageUrl: piece.image_url,
-              name: piece.name,
-              categoryName: piece.category?.name || null,
-            };
-          });
-
-        return { id: look.id, name: look.name, pieces: lookPieces };
-      });
-
-      const validLooks = result.filter((l) => l.pieces.length >= 3);
-      if (validLooks.length > 0) {
-        setLooks(validLooks);
-      } else {
-        setLooks(getMockLooksForPiece(pieceId));
-      }
-      setLoading(false);
-    }
-
-    if (pieceId) fetchLooksWithDetails();
+    if (!pieceId) return;
+    setLooks(getRealLooksForPiece(pieceId));
+    setLoading(false);
   }, [pieceId]);
 
   const handleFeedback = useCallback(
-    async (liked: boolean) => {
+    (liked: boolean) => {
       const lookId = looks[activeIndex]?.id;
       if (!lookId) return;
 
-      await supabase.from("feedback").insert({
-        session_id: "00000000-0000-0000-0000-000000000000",
-        look_id: lookId,
-        liked,
-      });
+      // Feedback será reconectado ao backend depois; por ora apenas avança.
+      void liked;
 
       // Auto-advance to next look after 600ms
       if (activeIndex < looks.length - 1) {

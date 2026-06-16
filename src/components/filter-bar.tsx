@@ -2,25 +2,14 @@
 
 import { useMemo } from "react";
 import { FilterChip } from "@/components/filter-chip";
+import { COLOR_FAMILIES, colorFamilyKey } from "@/lib/constants/colors";
 import type { FilterState } from "@/lib/hooks/use-filters";
 import type { Piece } from "@/types/database";
 
 const PRECO_RANGES = [
-  { key: "ate100", label: "até R$100" },
-  { key: "100a200", label: "R$100–200" },
-  { key: "200mais", label: "+R$200" },
-];
-
-// Fake color filters — only shown for camiseta masculino
-const CAMISETA_MASC_CATEGORY_ID = "b2c3d4e5-0001-4000-8000-000000000001";
-const FAKE_COLORS = [
-  { key: "preto", hex: "#000000" },
-  { key: "branco", hex: "#ffffff" },
-  { key: "grafite", hex: "#2b2b2f" },
-  { key: "bege", hex: "#d3cdbc" },
-  { key: "azul-cinza", hex: "#8d9fb0" },
-  { key: "caramelo", hex: "#b98452" },
-  { key: "marinho", hex: "#1b2340" },
+  { key: "ate100", label: "até R$100", test: (v: number) => v <= 100 },
+  { key: "100a200", label: "R$100–200", test: (v: number) => v > 100 && v <= 200 },
+  { key: "200mais", label: "+R$200", test: (v: number) => v > 200 },
 ];
 
 interface FilterBarProps {
@@ -30,8 +19,6 @@ interface FilterBarProps {
   onSetPrecoRange: (range: string | null) => void;
   onClear: () => void;
   activeCount: number;
-  categoryId?: string;
-  gender?: string;
 }
 
 export function FilterBar({
@@ -41,17 +28,29 @@ export function FilterBar({
   onSetPrecoRange,
   onClear,
   activeCount,
-  categoryId,
-  gender,
 }: FilterBarProps) {
-  const showFakeColors = categoryId === CAMISETA_MASC_CATEGORY_ID && gender === "masculino";
+  // Famílias de cor realmente presentes nesta categoria
+  const colors = useMemo(() => {
+    const present = new Set<string>();
+    for (const p of pieces) {
+      const k = colorFamilyKey(p.cor);
+      if (k) present.add(k);
+    }
+    return COLOR_FAMILIES.filter((f) => present.has(f.key));
+  }, [pieces]);
+
+  // Faixas de preço com pelo menos uma peça nesta categoria
+  const priceRanges = useMemo(() => {
+    return PRECO_RANGES.filter((r) =>
+      pieces.some((p) => p.preco_pdv != null && r.test(p.preco_pdv))
+    );
+  }, [pieces]);
 
   return (
     <div className="pt-3">
-      {/* Filters + Clear */}
       <div className="flex items-center gap-1.5 overflow-x-auto px-6 pb-2 scrollbar-hide">
-        {/* Fake color filters for camiseta masculino */}
-        {showFakeColors && FAKE_COLORS.map((color) => (
+        {/* Cores reais da categoria */}
+        {colors.map((color) => (
           <FilterChip
             key={`cor-${color.key}`}
             label=""
@@ -62,13 +61,12 @@ export function FilterBar({
           />
         ))}
 
-        {/* Separator */}
-        {showFakeColors && (
+        {colors.length > 0 && priceRanges.length > 0 && (
           <div className="mx-0.5 w-px shrink-0 self-stretch bg-border/60" />
         )}
 
-        {/* Price ranges */}
-        {PRECO_RANGES.map((range) => (
+        {/* Faixas de preço presentes */}
+        {priceRanges.map((range) => (
           <FilterChip
             key={`preco-${range.key}`}
             label={range.label}
@@ -77,7 +75,6 @@ export function FilterBar({
           />
         ))}
 
-        {/* Clear button inline */}
         {activeCount > 0 && (
           <>
             <div className="mx-0.5 w-px shrink-0 self-stretch bg-border/60" />

@@ -8,9 +8,9 @@ import { PieceCard } from "@/components/piece-card";
 import { FilterBar } from "@/components/filter-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase/client";
 import { useFilters } from "@/lib/hooks/use-filters";
-import { getMockPieces } from "@/lib/mock-data";
+import { colorFamilyKey } from "@/lib/constants/colors";
+import { getRealPieces, getRealCategoryIds } from "@/lib/real-data";
 import { PERSONAS } from "@/lib/constants/personas";
 import { CATEGORIES } from "@/lib/constants/categories";
 import type { Piece } from "@/types/database";
@@ -39,30 +39,19 @@ function PecasContent() {
   } = useFilters();
 
   useEffect(() => {
-    async function fetchPieces() {
-      setLoading(true);
-      const { data } = await supabase
-        .from("pieces")
-        .select("*")
-        .eq("persona_id", personaId)
-        .eq("category_id", categoryId)
-        .eq("is_active", true);
-
-      if (data && data.length > 0) {
-        setPieces(data);
-      } else {
-        setPieces(getMockPieces(personaId, categoryId));
-      }
-      setLoading(false);
-    }
-
-    if (personaId && categoryId) fetchPieces();
+    if (!personaId || !categoryId) return;
+    setLoading(true);
+    setPieces(getRealPieces(personaId, categoryId));
+    setLoading(false);
   }, [personaId, categoryId]);
 
   const filteredPieces = useMemo(() => {
     let result = pieces;
     if (filters.cores.length > 0) {
-      result = result.filter((p) => p.cor && filters.cores.includes(p.cor));
+      result = result.filter((p) => {
+        const fam = colorFamilyKey(p.cor);
+        return fam != null && filters.cores.includes(fam);
+      });
     }
     if (filters.precoRange) {
       result = result.filter((p) => {
@@ -78,10 +67,13 @@ function PecasContent() {
     return result;
   }, [pieces, filters]);
 
-  const genderCategories = useMemo(
-    () => CATEGORIES.filter((cat) => cat.genders.includes(gender)),
-    [gender]
-  );
+  const genderCategories = useMemo(() => {
+    const persona = PERSONAS.find((p) => p.gender === gender);
+    const available = new Set(persona ? getRealCategoryIds(persona.id) : []);
+    return CATEGORIES.filter(
+      (cat) => cat.genders.includes(gender) && available.has(cat.id)
+    );
+  }, [gender]);
 
   const handleGenderChange = useCallback(
     (newGender: "feminino" | "masculino") => {
@@ -140,8 +132,8 @@ function PecasContent() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {loading ? (
-          <div className="grid grid-cols-2 gap-4 px-6 py-6">
-            {Array.from({ length: 6 }).map((_, i) => (
+          <div className="grid grid-cols-3 gap-3 px-6 py-6 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {Array.from({ length: 12 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[3/4] w-full rounded-2xl" />
             ))}
           </div>
@@ -155,13 +147,11 @@ function PecasContent() {
                 onSetPrecoRange={setPrecoRange}
                 onClear={clearFilters}
                 activeCount={activeCount}
-                categoryId={categoryId}
-                gender={gender}
               />
             )}
 
             {filteredPieces.length > 0 ? (
-              <div className="grid grid-cols-3 gap-3 px-6 py-4 pb-8">
+              <div className="grid grid-cols-3 gap-3 px-6 py-4 pb-8 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
                 {filteredPieces.map((piece, index) => (
                   <div
                     key={piece.id}

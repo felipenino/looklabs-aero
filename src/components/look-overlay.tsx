@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 /* ─── Types ─── */
 
 interface LookPiece {
@@ -15,82 +13,44 @@ interface LookCompositionProps {
   pieces: LookPiece[];
 }
 
-/* ─── Slot positions (% of container) ─── */
-
-const SLOT_POSITIONS = {
-  1: {
-    // Camiseta — canto superior esquerdo, SEMPRE em primeiro plano
-    top: "6%",
-    left: "5%",
-    width: "52%",
-    zIndex: 4,
-  },
-  2: {
-    // Jaqueta/Moletom — superior direito, ATRÁS de tudo
-    top: "0%",
-    left: "30%",
-    width: "58%",
-    zIndex: 1,
-  },
-  3: {
-    // Acessório/Calçado — centro direita, menor
-    top: "48%",
-    left: "52%",
-    width: "32%",
-    zIndex: 3,
-  },
-  4: {
-    // Bermuda/Calça — inferior esquerda
-    top: "45%",
-    left: "10%",
-    width: "50%",
-    zIndex: 2,
-  },
-} as const;
-
-/* ─── Animation delays (staggered entrance) ─── */
+/* ─── Ordem visual na grade 2x2 ───
+   topo:    slot 1 (base)      | slot 2 (camada)
+   embaixo: slot 4 (baixo)     | slot 3 (calçado)        */
+const GRID_ORDER = [1, 2, 4, 3];
 
 const ANIMATION_DELAYS: Record<number, string> = {
   1: "0ms",
-  2: "100ms",
-  3: "200ms",
-  4: "300ms",
+  2: "80ms",
+  4: "160ms",
+  3: "240ms",
 };
 
 /* ─── Component ─── */
 
 export function LookOverlay({ pieces }: LookCompositionProps) {
+  const bySlot = new Map(pieces.map((p) => [p.slot, p]));
+
   return (
     <div
-      className="relative mx-auto w-full overflow-hidden"
-      style={{
-        aspectRatio: "3 / 4",
-        maxHeight: "calc(100vh - 160px)",
-      }}
+      className="mx-auto grid w-full grid-cols-2 gap-3"
+      style={{ aspectRatio: "3 / 4", maxHeight: "calc(100vh - 160px)" }}
     >
-      {pieces.map((piece) => {
-        const pos = SLOT_POSITIONS[piece.slot as keyof typeof SLOT_POSITIONS];
-        if (!pos) return null;
-
+      {GRID_ORDER.map((slot) => {
+        const piece = bySlot.get(slot);
         return (
           <div
-            key={piece.slot}
-            className="absolute animate-[flatlay-enter_400ms_ease-out_both]"
-            style={{
-              top: pos.top,
-              left: pos.left,
-              width: pos.width,
-              zIndex: pos.zIndex,
-              animationDelay: ANIMATION_DELAYS[piece.slot] ?? "0ms",
-            }}
+            key={slot}
+            className="flex items-center justify-center overflow-hidden rounded-2xl bg-muted/40"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={piece.imageUrl}
-              alt={piece.name ?? `Peça slot ${piece.slot}`}
-              className="h-auto w-full object-contain"
-              draggable={false}
-            />
+            {piece && (
+              <img
+                src={piece.imageUrl}
+                alt={piece.name ?? `Peça slot ${slot}`}
+                className="h-full w-full animate-[flatlay-enter_400ms_ease-out_both] object-contain p-2"
+                style={{ animationDelay: ANIMATION_DELAYS[slot] ?? "0ms" }}
+                draggable={false}
+              />
+            )}
           </div>
         );
       })}

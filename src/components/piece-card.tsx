@@ -19,8 +19,8 @@ export function PieceCard({ imageUrl, name, onClick }: PieceCardProps) {
           src={imageUrl}
           alt={name || "Peça"}
           fill
-          className="object-contain p-4"
-          sizes="(max-width: 768px) 45vw, 200px"
+          className="object-contain p-3"
+          sizes="220px"
         />
       </div>
     </button>

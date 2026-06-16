@@ -97,11 +97,11 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: "b2c3d4e5-0001-4000-8000-000000000009",
-    name: "Moletom",
-    slug: "moletom",
+    name: "Moletom / Jaqueta",
+    slug: "moletom-jaqueta",
     image: {
-      feminino: "/images/categorias/fem/moletom.png",
-      masculino: "/images/categorias/masc/moletom.png",
+      feminino: "/images/categorias/fem/jaqueta-blazer.png",
+      masculino: "/images/categorias/masc/jaqueta-blazer.png",
     },
     genders: ["feminino", "masculino"],
     order: 9,
