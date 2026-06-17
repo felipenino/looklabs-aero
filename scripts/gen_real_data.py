@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 """
 Gera os dados reais do LookLab a partir de:
-  - Planilha Looklab + Aero - v1 Piloto-15-junho.xlsx  (info das peças)
-  - CSV-APROVADOS/looklab_aeropostale-parte1.csv + parte2.csv  (looks)
+  - Planilha Looklab + Aero - v1 Piloto-15-junho.xlsx  (info das peças: abas MASCULINO + FEMININO)
+  - CSV-APROVADOS/looklab_aeropostale-parte1.csv + parte2.csv  (looks masculinos)
+  - CSV-APROVADOS/looklab_aeropostale-feminino.csv             (looks femininos)
 
 Saídas:
-  - public/images/pecas-real/<SKU>.png   (imagens copiadas das peças usadas)
-  - src/lib/real-data.ts                  (dados consumidos pelo app)
+  - public/images/pecas-real/<SKU>.<hash>.png   (imagens das peças usadas; hash = cache-busting)
+  - src/lib/real-data.ts                         (dados consumidos pelo app)
+  - RELATORIO-IMAGENS-FALTANTES.md               (peças sem imagem, p/ cobrar a Aéropostale)
 
 Regras:
   - SKU sem arquivo exato -> usa 1ª variante de cor (<SKU>-*.png)  [resolver]
-  - Looks com alguma peça irrecuperável são descartados
+  - Looks com alguma peça sem imagem são descartados (e a peça entra no relatório)
   - Slot definido pela categoria (não pela ordem do CSV):
       base (CAMISETA/POLO) -> slot 1
       camada (MOLETOM/JAQUETA, e CAMISA quando há base) -> slot 2
       calçado (CALÇADOS) -> slot 3
-      baixo (CALÇA/BERMUDA) -> slot 4
+      baixo (CALÇA/BERMUDA/SHORTS/SAIA) -> slot 4
       CAMISA vira base (slot 1) quando não há CAMISETA/POLO no look
 """
-import csv, os, shutil, json, sys, hashlib
+import csv, os, shutil, json, hashlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 XLSX = os.path.join(ROOT, "Planilha Looklab + Aero - v1 Piloto-15-junho.xlsx")
@@ -26,8 +28,11 @@ CSV_DIR = os.path.join(ROOT, "CSV-APROVADOS")
 PECAS_DIR = os.path.join(ROOT, "pecas-final-piloto")
 OUT_IMG = os.path.join(ROOT, "public", "images", "pecas-real")
 OUT_TS = os.path.join(ROOT, "src", "lib", "real-data.ts")
+OUT_REPORT = os.path.join(ROOT, "RELATORIO-IMAGENS-FALTANTES.md")
 
 MASC_PERSONA = "a1b2c3d4-0001-4000-8000-000000000001"
+FEM_PERSONA = "a1b2c3d4-0001-4000-8000-000000000004"
+PERSONA_OF = {"MASCULINO": MASC_PERSONA, "FEMININO": FEM_PERSONA}
 
 # classificacao (planilha) -> category id (categories.ts)
 CAT_ID = {
@@ -36,14 +41,23 @@ CAT_ID = {
     "CAMISA":   "b2c3d4e5-0001-4000-8000-000000000002",  # Top / Blusa
     "CALÇA":    "b2c3d4e5-0001-4000-8000-000000000003",  # Calça / Jeans
     "BERMUDA":  "b2c3d4e5-0001-4000-8000-000000000004",  # Bermuda
+    "SHORTS":   "b2c3d4e5-0001-4000-8000-000000000004",  # Bermuda (shorts feminino entram aqui)
+    "SAIA":     "b2c3d4e5-0001-4000-8000-000000000005",  # Saia
     "JAQUETA":  "b2c3d4e5-0001-4000-8000-000000000009",  # Moletom / Jaqueta (unificado)
     "MOLETOM":  "b2c3d4e5-0001-4000-8000-000000000009",  # Moletom / Jaqueta
     "CALÇADOS": "b2c3d4e5-0001-4000-8000-000000000010",  # Acessório
 }
 
+# fontes de looks: (prefixo do id, label de gênero, arquivo)
+LOOK_SOURCES = [
+    ("m1", "MASCULINO", "looklab_aeropostale-parte1.csv"),
+    ("m2", "MASCULINO", "looklab_aeropostale-parte2.csv"),
+    ("f",  "FEMININO",  "looklab_aeropostale-feminino.csv"),
+]
+
 BASE = {"CAMISETA", "POLO"}
 OUTER = {"MOLETOM", "JAQUETA"}
-BOTTOM = {"CALÇA", "BERMUDA"}
+BOTTOM = {"CALÇA", "BERMUDA", "SHORTS", "SAIA"}
 SHOES = {"CALÇADOS"}
 
 
@@ -56,10 +70,11 @@ def norm(v):
 
 
 def load_pieces():
+    """SKU -> {cor, pdv, nome, classif, sheet}. 1ª ocorrência vence."""
     import openpyxl
     wb = openpyxl.load_workbook(XLSX, data_only=True)
     info = {}
-    for sh in ["MASCULINO"]:
+    for sh in ["MASCULINO", "FEMININO"]:
         w = wb[sh]
         for r in range(2, w.max_row + 1):
             sku = norm(w.cell(r, 2).value)
@@ -69,13 +84,14 @@ def load_pieces():
                     "pdv": w.cell(r, 6).value,
                     "nome": w.cell(r, 7).value,
                     "classif": w.cell(r, 10).value,
+                    "sheet": sh,
                 }
     return info
 
 
 def build_resolver():
     files = [os.path.splitext(f)[0] for f in os.listdir(PECAS_DIR) if f.lower().endswith(".png")]
-    real_name = {f.lower(): f for f in files}  # lower -> real filename (case)
+    real_name = {f.lower(): f for f in files}
 
     def resolve(sku):
         if sku.lower() in real_name:
@@ -104,21 +120,40 @@ def main():
     info = load_pieces()
     resolve = build_resolver()
 
-    used_skus = {}      # sku -> resolved filename
-    looks = []          # {id, anchor, name, tags, pieces:[{slot,sku}]}
+    used_skus = {}   # sku -> resolved filename
+    looks = []       # {id, anchor, name, tags, pieces:[{slot,sku}]}
     dropped = 0
+    # relatório de imagens faltantes: sku -> {gender, name, classif, looks, is_anchor}
+    missing = {}
 
-    for part in ["parte1", "parte2"]:
-        path = os.path.join(CSV_DIR, f"looklab_aeropostale-{part}.csv")
+    def classif_of(sku):
+        return info.get(sku, {}).get("classif")
+
+    for prefix, gender, fname in LOOK_SOURCES:
+        path = os.path.join(CSV_DIR, fname)
+        if not os.path.exists(path):
+            print(f"AVISO: fonte não encontrada: {fname}")
+            continue
         with open(path) as f:
             for row in csv.DictReader(f):
                 pecas = [p for p in row["pecas"].split("|") if p]
-                # resolve all images first
                 resolved = {p: resolve(p) for p in pecas}
-                if any(v is None for v in resolved.values()):
+                bad = [p for p in pecas if resolved[p] is None]
+                if bad:
                     dropped += 1
+                    for p in bad:
+                        m = missing.setdefault(p, {
+                            "gender": gender,
+                            "name": info.get(p, {}).get("nome") or "(sem nome na planilha)",
+                            "classif": classif_of(p) or "(sem categoria)",
+                            "looks": 0,
+                            "is_anchor": False,
+                        })
+                        m["looks"] += 1
+                        if row["anchor"] == p:
+                            m["is_anchor"] = True
                     continue
-                classifs = {p: info.get(p, {}).get("classif") for p in pecas}
+                classifs = {p: classif_of(p) for p in pecas}
                 has_base = any(classifs[p] in BASE for p in pecas)
                 slots = {}
                 collision = False
@@ -134,16 +169,16 @@ def main():
                 for p in pecas:
                     used_skus[p] = resolved[p]
                 looks.append({
-                    "id": f"{part[-1]}-{row['look_id']}",
+                    "id": f"{prefix}-{row['look_id']}",
                     "anchor": row["anchor"],
                     "name": row["nome"],
                     "tags": row["tags"],
                     "pieces": [{"slot": s, "sku": sku} for s, sku in sorted(slots.items())],
                 })
 
-    # copy images com hash de conteúdo no nome (cache-busting sem query string)
+    # copia imagens com hash de conteúdo no nome (cache-busting sem query string)
     os.makedirs(OUT_IMG, exist_ok=True)
-    img_name = {}  # sku -> nome final do arquivo (com hash)
+    img_name = {}
     for sku, fname in used_skus.items():
         src = os.path.join(PECAS_DIR, fname + ".png")
         with open(src, "rb") as fh:
@@ -153,13 +188,12 @@ def main():
         dst = os.path.join(OUT_IMG, out)
         if not os.path.exists(dst):
             shutil.copyfile(src, dst)
-    # remove variantes antigas (mesmo sku, hash diferente)
     keep = set(img_name.values())
     for f in os.listdir(OUT_IMG):
         if f.endswith(".png") and f not in keep:
             os.remove(os.path.join(OUT_IMG, f))
 
-    # pieces payload (only used pieces)
+    # payload das peças usadas
     pieces_payload = {}
     for sku in used_skus:
         meta = info.get(sku, {})
@@ -167,7 +201,7 @@ def main():
         pdv = meta.get("pdv")
         pieces_payload[sku] = {
             "id": sku,
-            "persona_id": MASC_PERSONA,
+            "persona_id": PERSONA_OF.get(meta.get("sheet"), MASC_PERSONA),
             "category_id": CAT_ID.get(classif, ""),
             "image_url": f"/images/pecas-real/{img_name[sku]}",
             "name": meta.get("nome") or sku,
@@ -176,14 +210,54 @@ def main():
             "classif": classif,
         }
 
-    # anchors = pieces that are anchor of at least one look
     anchors = sorted({lk["anchor"] for lk in looks})
 
     emit_ts(pieces_payload, looks, anchors)
-    print(f"Looks gerados: {len(looks)}  |  descartados: {dropped}")
+    write_report(missing)
+
+    masc = sum(1 for lk in looks if lk["anchor"] in pieces_payload and pieces_payload[lk["anchor"]]["persona_id"] == MASC_PERSONA)
+    fem = len(looks) - masc
+    print(f"Looks gerados: {len(looks)}  (masc {masc} / fem {fem})  |  descartados: {dropped}")
     print(f"Peças usadas: {len(used_skus)}  |  âncoras: {len(anchors)}")
-    print(f"Imagens em: {OUT_IMG}")
-    print(f"Dados em:   {OUT_TS}")
+    print(f"Imagens faltantes (relatório): {len(missing)}")
+    print(f"Dados:     {OUT_TS}")
+    print(f"Relatório: {OUT_REPORT}")
+
+
+def write_report(missing):
+    masc = {k: v for k, v in missing.items() if v["gender"] == "MASCULINO"}
+    fem = {k: v for k, v in missing.items() if v["gender"] == "FEMININO"}
+
+    def table(items):
+        if not items:
+            return "_Nenhuma peça sem imagem._\n"
+        rows = sorted(items.items(), key=lambda kv: (-kv[1]["looks"], kv[0]))
+        out = ["| SKU | Nome | Categoria | Looks afetados | É âncora? |",
+               "|-----|------|-----------|----------------|-----------|"]
+        for sku, m in rows:
+            out.append(f"| `{sku}` | {m['name']} | {m['classif']} | {m['looks']} | {'**sim**' if m['is_anchor'] else 'não'} |")
+        return "\n".join(out) + "\n"
+
+    total_looks_masc = sum(m["looks"] for m in masc.values())
+    total_looks_fem = sum(m["looks"] for m in fem.values())
+
+    md = f"""# Relatório — Peças sem imagem (LookLab / Aéropostale)
+
+> Gerado automaticamente por `scripts/gen_real_data.py`.
+> Estas peças aparecem em looks aprovados mas **não têm imagem** em `pecas-final-piloto/`
+> (nem variante de cor). Os looks que dependem delas foram **descartados** do piloto.
+> Enviar para a Aéropostale providenciar as imagens (PNG recortado, fundo transparente).
+
+## Resumo
+- **Masculino:** {len(masc)} peça(s) sem imagem — afetam {total_looks_masc} look(s).
+- **Feminino:** {len(fem)} peça(s) sem imagem — afetam {total_looks_fem} look(s).
+
+## Masculino
+{table(masc)}
+## Feminino
+{table(fem)}"""
+    with open(OUT_REPORT, "w") as f:
+        f.write(md)
 
 
 def emit_ts(pieces, looks, anchors):
@@ -192,12 +266,11 @@ def emit_ts(pieces, looks, anchors):
 
     lines = []
     lines.append("// AUTO-GERADO por scripts/gen_real_data.py — NÃO editar à mão.")
-    lines.append("// Fonte: Planilha v1 Piloto-15-junho.xlsx + CSV-APROVADOS/*.csv")
+    lines.append("// Fonte: Planilha v1 Piloto-15-junho.xlsx + CSV-APROVADOS/*.csv (masc + fem)")
     lines.append('import type { Piece, LookDetailFull } from "@/types/database";')
     lines.append("")
     lines.append("interface RealPiece extends Piece { classif: string | null; }")
     lines.append("")
-    # pieces map
     lines.append("const PIECES: Record<string, RealPiece> = {")
     for sku, p in pieces.items():
         lines.append(f"  {js(sku)}: {{")
@@ -209,7 +282,6 @@ def emit_ts(pieces, looks, anchors):
         lines.append("  },")
     lines.append("};")
     lines.append("")
-    # looks
     lines.append("interface RealLook { id: string; anchor: string; name: string; tags: string; pieces: { slot: number; sku: string }[]; }")
     lines.append("const LOOKS: RealLook[] = [")
     for lk in looks:
