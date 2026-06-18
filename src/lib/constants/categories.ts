@@ -100,7 +100,7 @@ export const CATEGORIES: Category[] = [
     name: "Moletom / Jaqueta",
     slug: "moletom-jaqueta",
     image: {
-      feminino: "/images/categorias/fem/jaqueta-blazer.png",
+      feminino: "/images/categorias/fem/moletom.png",
       masculino: "/images/categorias/masc/jaqueta-blazer.png",
     },
     genders: ["feminino", "masculino"],
